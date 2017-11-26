@@ -1,0 +1,2 @@
+bottle==0.12.13
+python-chess==0.22.0
