@@ -17,7 +17,4 @@ six==1.11.0
 stevedore==1.27.1
 urllib3==1.22
 vine==1.1.4
-virtualenv==15.1.0
-virtualenv-clone==0.2.6
-virtualenvwrapper==4.8.2
 websocket-client==0.44.0
