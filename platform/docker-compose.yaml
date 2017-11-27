@@ -1,0 +1,16 @@
+version: '2'
+services:
+    rabbitmq:
+        hostname: rabbitmq
+        image: rabbitmq:latest
+        environment:
+            - RABBITMQ_DEFAULT_USER=admin
+            - RABBITMQ_DEFAULT_PASS=mypass
+
+    database:
+        hostname: postgres
+        image: postgres:latest
+
+    registry:
+        hostname: registry
+        image: registry:v2
