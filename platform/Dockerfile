@@ -8,6 +8,6 @@ COPY spawn.py .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-VOLUME /var/run/docker.sock /var/run/docker.sock
+VOLUME /var/run/docker.sock
 
 CMD [ "pypy", "spawn.py" ]
