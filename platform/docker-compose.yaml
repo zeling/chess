@@ -3,14 +3,13 @@ services:
     rabbitmq:
         hostname: rabbitmq
         image: rabbitmq:latest
-        environment:
-            - RABBITMQ_DEFAULT_USER=admin
-            - RABBITMQ_DEFAULT_PASS=mypass
+		env_file: .rabbitmq.env
 
     database:
         hostname: postgres
         image: postgres:latest
+		env_file: .postgres.env
 
     registry:
         hostname: registry
-        image: registry:v2
+        image: registry:latest
