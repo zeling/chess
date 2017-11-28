@@ -8,15 +8,12 @@ services:
         build: ./worker
 
     rabbitmq:
-        hostname: rabbitmq
         image: rabbitmq:latest
         env_file: .rabbitmq.env
 
-    database:
-        hostname: postgres
+    postgres:
         image: postgres:latest
         env_file: .postgres.env
 
     registry:
-        hostname: registry
         image: registry:latest

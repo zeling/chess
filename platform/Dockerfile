@@ -1,14 +1,14 @@
 FROM python:2.7
-MAINTANER Zeling Feng
+MAINTAINER Zeling Feng
 
 WORKDIR /usr/src/app
 
 COPY requirements.txt .
 
-COPY spawn.py .
+COPY src/ .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
 VOLUME /var/run/docker.sock
 
-CMD [ "pypy", "spawn.py" ]
+CMD [ "python", "wsgi.py" ]
