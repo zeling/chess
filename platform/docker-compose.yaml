@@ -1,14 +1,21 @@
 version: '2'
 services:
+    web:
+        build: ./web
+        ports: "8080:8080"
+    
+    worker:
+        build: ./worker
+
     rabbitmq:
         hostname: rabbitmq
         image: rabbitmq:latest
-		env_file: .rabbitmq.env
+        env_file: .rabbitmq.env
 
     database:
         hostname: postgres
         image: postgres:latest
-		env_file: .postgres.env
+        env_file: .postgres.env
 
     registry:
         hostname: registry

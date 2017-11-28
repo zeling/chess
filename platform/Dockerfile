@@ -1,4 +1,5 @@
-FROM pypy:2-5.9.0
+FROM python:2.7
+MAINTANER Zeling Feng
 
 WORKDIR /usr/src/app
 
