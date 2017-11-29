@@ -65,7 +65,7 @@ def launch():
 @app.post('/kill')
 def kill():
     stu_id = request.json['stu_id']
-    with delay(tasks.launch, stu_id) as r:
+    with delay(tasks.kill, stu_id) as r:
          r.get(10)
          return 'successfully killed your agent'
 

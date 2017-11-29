@@ -32,8 +32,9 @@ def deploy(stu_id, submission):
         with tarfile.open(name=tarname, mode='r|gz') as tar:
             tar.extractall(path=tmpdir)
         docker = DockerClient('unix:///var/run/docker.sock')
-        docker.images.build(path=tmpdir, tag=img_tag(stu_id))
-        docker.images.push(img_tag)
+        img = docker.images.build(path=tmpdir, tag=img_tag(stu_id))
+        docker.images.push(img_tag(stu_id))
+        return img
     except:
         raise
     finally:
@@ -48,7 +49,7 @@ def launch(stu_id):
     if docker.containers.list(filters={'name': stu_id}):
        raise RuntimeError('You have already launched your instance')
     else:
-       container = docker.containers.run(img_tag(stu_id), auto_remove=True, cpu_count=1, detach=True, name=stu_id)
+       return docker.containers.run(img_tag(stu_id), auto_remove=True, cpu_count=1, detach=True, name=stu_id)
 
 @app.task
 def kill(stu_id):
