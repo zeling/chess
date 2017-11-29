@@ -13,7 +13,6 @@ def ask_cred():
     sys.stdout.write('Student Id: ')
     return (raw_input(), getpass.getpass())
 
-
 @click.group()
 def cli():
     pass

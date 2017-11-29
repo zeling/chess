@@ -24,7 +24,7 @@ def deploy(stu_id, submission):
             tar.extractall(path=tmpdir)
         img_tag = '{}/chess/{}'.format('localhost:5000', stu_id)
         docker = DockerClient('unix:///var/run/docker.sock')
-        docker.images.build(path=os.path.join(tmpdir, 'agent'), tag=img_tag)
+        docker.images.build(path=tmpdir, tag=img_tag)
         docker.images.push(img_tag)
 
     except:
