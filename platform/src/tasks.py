@@ -49,7 +49,7 @@ def launch(stu_id):
     if docker.containers.list(filters={'name': stu_id}):
        raise RuntimeError('You have already launched your instance')
     else:
-       ctn = docker.containers.run(img_tag(stu_id), auto_remove=True, cpu_count=1, detach=True, name=stu_id)
+       ctn = docker.containers.run(img_tag(stu_id), auto_remove=True, cpu_count=1, detach=True, name=stu_id, network='platform_default')
        return ctn.id
 
 @app.task
