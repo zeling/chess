@@ -10,7 +10,7 @@ import tarfile
 import smtplib
 import requests
 
-REPO = 'repository:5000'
+REPO = 'registry:5000'
 
 app = Celery('tasks', broker='amqp://{RABBITMQ_DEFAULT_USER}:{RABBITMQ_DEFAULT_PASS}@rabbitmq'.format(**os.environ), backend="amqp")
 
