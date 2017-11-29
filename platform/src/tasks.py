@@ -8,9 +8,18 @@ import os
 import errno
 import tarfile
 import smtplib
+import requests
 
+REPO = 'repository:5000'
 
-app = Celery('tasks', broker='amqp://guest:guest@localhost', backend="amqp")
+app = Celery('tasks', broker='amqp://{RABBITMQ_DEFAULT_USER}:{RABBITMQ_DEFAULT_PASS}@rabbitmq'.format(**os.environ), backend="amqp")
+
+def img_tag(stu_id):
+    return '{}/chess/{}'.format(REPO, stu_id)
+
+@app.task
+def fetch_movement(stu_id, fen):
+    return requests.post('http://{stu_id}:8080/api/movement', fen).text
 
 @app.task
 def deploy(stu_id, submission):
@@ -22,14 +31,11 @@ def deploy(stu_id, submission):
         os.close(t)
         with tarfile.open(name=tarname, mode='r|gz') as tar:
             tar.extractall(path=tmpdir)
-        img_tag = '{}/chess/{}'.format('localhost:5000', stu_id)
         docker = DockerClient('unix:///var/run/docker.sock')
-        docker.images.build(path=os.path.join(tmpdir, 'agent'), tag=img_tag)
+        docker.images.build(path=tmpdir, tag=img_tag(stu_id))
         docker.images.push(img_tag)
-
     except:
         raise
-
     finally:
         try:
             rmtree(tmpdir)
@@ -42,8 +48,20 @@ def launch(stu_id):
     if docker.containers.list(filters={'name': stu_id}):
        raise RuntimeError('You have already launched your instance')
     else:
-       img_tag = '{}/chess/{}'.format('localhost:5000', stu_id)
-       container = docker.containers.run(img_tag, auto_remove=True, cpu_count=1, detach=True, name=stu_id)
+       container = docker.containers.run(img_tag(stu_id), auto_remove=True, cpu_count=1, detach=True, name=stu_id)
+
+@app.task
+def kill(stu_id):
+    docker = DockerClient('unix:///var/run/docker.sock')
+    c = docker.containers.list(filters={'name': stu_id})
+    if c:
+	c[0].kill()
+    else:
+        raise RuntimeError('You have not lauched your instance')
+
+@app.task
+def list_agents():
+    return requests.get('http://{REPO}/v2/_catalog'.format(**globals())).json()
 
 @app.task
 def sendmail(stu_id, subject, content):
