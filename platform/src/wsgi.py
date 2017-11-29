@@ -7,7 +7,7 @@ from contextlib import contextmanager
 import tasks
 
 app = application = Bottle()
-app.install(PGPlugin(host='localhost', dbname='postgres', user='postgres', password='M4rkf3ng', maxsize=3))
+# app.install(PGPlugin(host='localhost', dbname='postgres', user='postgres', password='', maxsize=3))
 
 class ErrorHandler:
     def get(self, ignore, default):
@@ -21,8 +21,8 @@ app.error_handler = ErrorHandler()
 
 
 @app.get('/')
-def root(pool):
-    pool.execute('SELECT pg_sleep(3);')
+def root():
+    # pool.execute('SELECT pg_sleep(3);')
     return '42'
 
 @app.post('/user')
@@ -30,9 +30,9 @@ def create_user(pool):
     pass
 
 @app.post('/token')
-def token(pool):
+def token():
     auth_data = request.json
-    pool.fetchone('SELECT * FROM users WHERE user_id = ?', auth_data.name)
+    # pool.fetchone('SELECT * FROM users WHERE user_id = ?', auth_data.name)
     return "42"
 
 @app.get('/agents')
@@ -83,5 +83,6 @@ def delay(task, *args, **kwargs):
     except Exception as e:
         abort(403, str(e)) 
         
-run(app, host='0.0.0.0', port=8080, server='gevent')
+if __name__ == '__main__':
+    run(app, host='0.0.0.0', port=8080, server='gevent')
 
