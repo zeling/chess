@@ -43,6 +43,7 @@ def deploy(path):
             f.seek(0)
             content = b64encode(f.read())
         os.remove(name)
+        print content
     else:
         click.echo('you should specify a directory with a Dockerfile')
 

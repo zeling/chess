@@ -14,6 +14,10 @@ REPO = 'repository:5000'
 
 app = Celery('tasks', broker='amqp://{RABBITMQ_DEFAULT_USER}:{RABBITMQ_DEFAULT_PASS}@rabbitmq'.format(**os.environ), backend="amqp")
 
+@contextmanager
+def get_docker():
+    return DockerClient('unix:///var/run/docker.sock', version='1.24')
+
 def img_tag(stu_id):
     return '{}/chess/{}'.format(REPO, stu_id)
 
@@ -31,7 +35,7 @@ def deploy(stu_id, submission):
         os.close(t)
         with tarfile.open(name=tarname, mode='r|gz') as tar:
             tar.extractall(path=tmpdir)
-        docker = DockerClient('unix:///var/run/docker.sock')
+        docker = get_docker()
         img = docker.images.build(path=tmpdir, tag=img_tag(stu_id))
         docker.images.push(img_tag(stu_id))
         return img.id
@@ -45,7 +49,7 @@ def deploy(stu_id, submission):
                 raise
 @app.task
 def launch(stu_id):
-    docker = DockerClient('unix:///var/run/docker.sock')
+    docker = get_docker()
     if docker.containers.list(filters={'name': stu_id}):
        raise RuntimeError('You have already launched your instance')
     else:
@@ -54,7 +58,7 @@ def launch(stu_id):
 
 @app.task
 def kill(stu_id):
-    docker = DockerClient('unix:///var/run/docker.sock')
+    docker = get_docker()
     c = docker.containers.list(filters={'name': stu_id})
     if c:
 	c[0].kill()

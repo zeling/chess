@@ -1,4 +1,8 @@
 from gevent import monkey; monkey.patch_all()
+
+import bottle
+bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024
+
 from bottle import Bottle, request, run, abort
 from pg_plugin import PGPlugin
 from docker.errors import APIError
