@@ -23,6 +23,7 @@ class ErrorHandler:
 
 app.error_handler = ErrorHandler()
 
+alive_containers = set()
 
 @app.get('/')
 def root():
@@ -35,8 +36,7 @@ def create_user(pool):
 
 @app.post('/token')
 def token():
-    auth_data = request.json
-    # pool.fetchone('SELECT * FROM users WHERE user_id = ?', auth_data.name)
+    auth_data = request.json # pool.fetchone('SELECT * FROM users WHERE user_id = ?', auth_data.name)
     return "42"
 
 @app.get('/agents')
@@ -63,14 +63,14 @@ def deploy():
 def launch():
     stu_id = request.json['stu_id']
     with delay(tasks.launch, stu_id) as r:
-         r.get(timeout=10)
+         alive_containers.add(r.get(timeout=10))
          return 'successfully deplyed your agent'
 
 @app.post('/kill')
 def kill():
     stu_id = request.json['stu_id']
     with delay(tasks.kill, stu_id) as r:
-         r.get(timeout=10)
+         alive_containers.remove(r.get(timeout=10))
          return 'successfully killed your agent'
 
 @contextmanager
@@ -88,5 +88,15 @@ def delay(task, *args, **kwargs):
         abort(403, str(e)) 
         
 if __name__ == '__main__':
+    import signal
+    from tasks import get_docker
+
+    def sig_term_hdl(num, f):
+        d = get_docker()
+        for c in alive_containers:
+            d.containers.get(c).kill()
+            d.containers.get(c).remove()
+    signal.signal(signal.SIGTERM, sig_term_hdl)
+
     run(app, host='0.0.0.0', port=8080, server='gevent')
 

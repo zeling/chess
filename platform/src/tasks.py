@@ -61,8 +61,10 @@ def kill(stu_id):
     cs = docker.containers.list(filters={'name': stu_id})
     if cs:
 	c = cs[0]
+        id = c.id
         c.kill()
         c.remove()
+        return id
     else:
         raise RuntimeError('You have not lauched your instance')
 

@@ -13,7 +13,8 @@ services:
         entrypoint: celery worker -A tasks -P gevent --loglevel=info
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-
+        tmpfs: /tmp
+ 
     rabbitmq:
         image: rabbitmq:latest
         env_file: .rabbitmq.env
@@ -21,6 +22,14 @@ services:
     postgres:
         image: postgres:latest
         env_file: .postgres.env
+        volumes:
+            - pgdata:/var/lib/postgresql/data
 
     registry:
         image: registry:2
+        volumes:
+           - registry:/var/lib/registry
+
+volumes:
+    pgdata:
+    registry:
