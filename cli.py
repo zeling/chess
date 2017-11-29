@@ -7,7 +7,7 @@ import tarfile
 import os
 from base64 import b64encode
 
-SERVER_URI = 'http://10.141.209.144:4321'
+SERVER_URI = 'http://10.141.209.144:54321'
 
 def ask_cred():
     sys.stdout.write('Student Id: ')
@@ -29,6 +29,11 @@ def login():
     print "{SERVER_URI}/token".format(**globals())
 
 @cli.command()
+def list():
+    for r in requests.get('{SERVER_URI}/agents'.format(**globals())).json().repositories:
+        print r
+
+@cli.command()
 @click.argument('path', default=os.path.join(os.getcwd(), 'agent'))
 def deploy(path):
     path = os.path.normpath(path)
@@ -43,7 +48,7 @@ def deploy(path):
             f.seek(0)
             content = b64encode(f.read())
         os.remove(name)
-        print content
+        # int r = requests.post('{SERVER_URI}/deploy', data=json.dumps({ stu_id: stu_id, content: content }))
     else:
         click.echo('you should specify a directory with a Dockerfile')
 
