@@ -3,7 +3,7 @@ from gevent import monkey; monkey.patch_all()
 import bottle
 bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024
 
-from bottle import Bottle, request, run, abort
+from bottle import Bottle, request, run, abort, template, static_file
 from pg_plugin import PGPlugin
 from docker.errors import APIError
 from celery.exceptions import TimeoutError
@@ -25,6 +25,10 @@ app.error_handler = ErrorHandler()
 
 alive_containers = set()
 
+@app.get('/static/<filename:path>')
+def serve_static(filename):
+    return static_file(filename, root='./static')
+
 @app.get('/')
 def root():
     # pool.execute('SELECT pg_sleep(3);')
@@ -33,6 +37,10 @@ def root():
 @app.post('/user')
 def create_user(pool):
     pass
+
+@app.get('/board/<stu_id:int>')
+def board(stu_id):
+    return template('index', stu_id=stu_id)
 
 @app.post('/token')
 def token():
