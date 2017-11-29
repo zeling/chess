@@ -34,7 +34,7 @@ def deploy(stu_id, submission):
         docker = DockerClient('unix:///var/run/docker.sock')
         img = docker.images.build(path=tmpdir, tag=img_tag(stu_id))
         docker.images.push(img_tag(stu_id))
-        return img
+        return img.id
     except:
         raise
     finally:
@@ -49,7 +49,8 @@ def launch(stu_id):
     if docker.containers.list(filters={'name': stu_id}):
        raise RuntimeError('You have already launched your instance')
     else:
-       return docker.containers.run(img_tag(stu_id), auto_remove=True, cpu_count=1, detach=True, name=stu_id)
+       ctn = docker.containers.run(img_tag(stu_id), auto_remove=True, cpu_count=1, detach=True, name=stu_id)
+       return ctn.id
 
 @app.task
 def kill(stu_id):
