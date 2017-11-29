@@ -14,7 +14,6 @@ REPO = 'repository:5000'
 
 app = Celery('tasks', broker='amqp://{RABBITMQ_DEFAULT_USER}:{RABBITMQ_DEFAULT_PASS}@rabbitmq'.format(**os.environ), backend="amqp")
 
-@contextmanager
 def get_docker():
     return DockerClient('unix:///var/run/docker.sock', version='1.24')
 
@@ -23,7 +22,7 @@ def img_tag(stu_id):
 
 @app.task
 def fetch_movement(stu_id, fen):
-    return requests.post('http://{stu_id}:8080/api/movement', fen).text
+    return requests.post('http://{stu_id}:8080/api/movement'.format(**locals()), fen).text
 
 @app.task
 def deploy(stu_id, submission):
@@ -53,15 +52,17 @@ def launch(stu_id):
     if docker.containers.list(filters={'name': stu_id}):
        raise RuntimeError('You have already launched your instance')
     else:
-       ctn = docker.containers.run(img_tag(stu_id), auto_remove=True, cpu_count=1, detach=True, name=stu_id, network='platform_default')
+       ctn = docker.containers.run(img_tag(stu_id), cpu_period=100000, cpu_quota=100000, detach=True, name=stu_id, mem_limit='64m', network='platform_default')
        return ctn.id
 
 @app.task
 def kill(stu_id):
     docker = get_docker()
-    c = docker.containers.list(filters={'name': stu_id})
-    if c:
-	c[0].kill()
+    cs = docker.containers.list(filters={'name': stu_id})
+    if cs:
+	c = cs[0]
+        c.kill()
+        c.remove()
     else:
         raise RuntimeError('You have not lauched your instance')
 

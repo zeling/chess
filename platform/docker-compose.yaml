@@ -23,4 +23,4 @@ services:
         env_file: .postgres.env
 
     registry:
-        image: registry:latest
+        image: registry:2
