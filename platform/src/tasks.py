@@ -34,7 +34,6 @@ def deploy(stu_id, submission):
         os.close(t)
         with tarfile.open(name=tarname, mode='r|gz') as tar:
             tar.extractall(path=tmpdir)
-        kill(stu_id)
         docker = get_docker()
         img = docker.images.build(path=tmpdir, tag=img_tag(stu_id))
         docker.images.push(img_tag(stu_id))
