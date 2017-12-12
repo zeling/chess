@@ -57,28 +57,28 @@ def fetch_movement():
     stu_id = request.json['stu_id']
     fen = request.json['fen']
     with delay(tasks.fetch_movement, stu_id, fen) as r:
-         return r.get(timeout=3)
+         return r.get(timeout=5)
 
 @app.post('/deploy')
 def deploy():
     stu_id = request.json['stu_id']
     content = request.json['content']
     with delay(tasks.deploy, stu_id, content) as r:
-         r.get(timeout=10)
+         r.get(timeout=30)
          return 'successfully deployed your agent'
 
 @app.post('/launch')
 def launch():
     stu_id = request.json['stu_id']
     with delay(tasks.launch, stu_id) as r:
-         alive_containers.add(r.get(timeout=10))
-         return 'successfully deplyed your agent'
+         alive_containers.add(r.get(timeout=30))
+         return 'successfully launched your agent'
 
 @app.post('/kill')
 def kill():
     stu_id = request.json['stu_id']
     with delay(tasks.kill, stu_id) as r:
-         alive_containers.remove(r.get(timeout=10))
+         alive_containers.remove(r.get(timeout=30))
          return 'successfully killed your agent'
 
 @contextmanager

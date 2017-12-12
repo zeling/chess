@@ -1,0 +1,35 @@
+<html>
+<body>
+<h1>Project 2</h1>
+<h2>Objective</h2>
+<p>Write a chess AI with traditional techniques like <a href="https://www.cs.cornell.edu/courses/cs312/2002sp/lectures/rec21.htm">minimax search and alpha-beta pruning</a></p>
+<h2>Prerequisites</h2>
+python2, pip
+<h2>Instructions</h2>
+<p>
+Download handout.tar from the ftp or from <a href="http://10.141.209.144:54321/static/handout.tar">HERE</a>, extract it and you will fild `cli.py' and `agent/' folder.
+Modify the `agent/src/agent.py', and fill your code in the function `respond_to' which receives
+a string in <a href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation">FEN(Forsyth-Edwards Notation)</a>, 
+and returns a move in string. Please refer to the `Move format'
+section of <a href="http://wbec-ridderkerk.nl/html/UCIProtocol.html">the UCI(Universal Chess Interface) specification</a> about the movement presentation.
+Once you are convinced that you have a working agent, you should upload it to our server as following:
+<ul>
+<li>Make sure you are using python2, check the output of `python -V', it should be 2.7.x or 2.6.x</li>
+<li>Install the dependencies, `pip install requests click' if there is an error, add sudo in the front</li>
+<li>`python cli.py deploy &lt;YOUR STUDENT NUMBER&gt; [THE PATH TO YOUR AGENT FOLDER]', the path can be ommited, <em> please try to kill your agent first before you deploy a new version </em></li>
+<li>`python cli.py launch &lt;YOUR STUDENT NUMBER&gt;'</li>
+<li>open `http://10.141.209.144:54321/board/&lt;YOUR STUDENT NUMBER&gt;' in your browser to test your agent.</li>
+</ul>
+</p>
+<h2>Notice</h2>
+<ul>
+<li>Your agent must respond in <em> 3 </em> seconds, otherwise you lose the match</li>
+<li>Your agent must make legal moves, otherwise you lose the match</li>
+<li>You must NOT upload any malicious code, otherwise you get ZERO points</li>
+</ul>
+</body>
+<h2>Library Reference</h2>
+<p>You are allowed to use the library `python-chess' whose document can be found <a href="http://python-chess.readthedocs.io/en/latest/">HERE</a>
+<h2>Deadline</h2>
+<p>Dec. 24, 2017</p>
+</html>

@@ -12,7 +12,7 @@ services:
     worker:
         build: .
         env_file: .rabbitmq.env
-        entrypoint: celery worker -A tasks -P gevent --loglevel=info
+        entrypoint: celery worker -A tasks -P gevent -c 1000 --loglevel=info
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
         tmpfs: /tmp
@@ -29,6 +29,8 @@ services:
 
     registry:
         image: registry:2
+        ports:
+            - 5000:5000
         volumes:
            - registry:/var/lib/registry
 

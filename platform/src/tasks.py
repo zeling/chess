@@ -18,7 +18,7 @@ def get_docker():
     return DockerClient('unix:///var/run/docker.sock', version='1.24')
 
 def img_tag(stu_id):
-    return '{}/chess/{}'.format(REPO, stu_id)
+    return '{}/chess/{}:latest'.format(REPO, stu_id)
 
 @app.task
 def fetch_movement(stu_id, fen):
