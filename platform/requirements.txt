@@ -22,6 +22,6 @@ pytz==2017.3
 requests==2.18.4
 six==1.11.0
 stevedore==1.27.1
-urllib3==1.24.2
+urllib3==1.26.5
 vine==1.1.4
 websocket-client==0.44.0
