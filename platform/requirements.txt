@@ -4,7 +4,7 @@ bcrypt==3.1.4
 billiard==3.5.0.3
 bottle==0.12.20
 celery==4.1.0
-certifi==2017.11.5
+certifi==2022.12.7
 cffi==1.11.2
 chardet==3.0.4
 docker==2.6.1
